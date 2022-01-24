@@ -36,9 +36,9 @@ import (
 	injection "knative.dev/pkg/injection"
 	dynamicclient "knative.dev/pkg/injection/clients/dynamicclient"
 	logging "knative.dev/pkg/logging"
-	v1alpha1 "knative.dev/sample-source/pkg/apis/samples/v1alpha1"
-	versioned "knative.dev/sample-source/pkg/client/clientset/versioned"
-	typedsamplesv1alpha1 "knative.dev/sample-source/pkg/client/clientset/versioned/typed/samples/v1alpha1"
+	v1alpha1 "github.com/baum/noobaa-source/pkg/apis/noobaasources/v1alpha1"
+	versioned "github.com/baum/noobaa-source/pkg/client/clientset/versioned"
+	typednoobaasourcev1alpha1 "github.com/baum/noobaa-source/pkg/client/clientset/versioned/typed/noobaasources/v1alpha1"
 )
 
 func init() {
@@ -66,10 +66,10 @@ func Get(ctx context.Context) versioned.Interface {
 	if untyped == nil {
 		if injection.GetConfig(ctx) == nil {
 			logging.FromContext(ctx).Panic(
-				"Unable to fetch knative.dev/sample-source/pkg/client/clientset/versioned.Interface from context. This context is not the application context (which is typically given to constructors via sharedmain).")
+				"Unable to fetch github.com/baum/noobaa-source/pkg/client/clientset/versioned.Interface from context. This context is not the application context (which is typically given to constructors via sharedmain).")
 		} else {
 			logging.FromContext(ctx).Panic(
-				"Unable to fetch knative.dev/sample-source/pkg/client/clientset/versioned.Interface from context.")
+				"Unable to fetch github.com/baum/noobaa-source/pkg/client/clientset/versioned.Interface from context.")
 		}
 	}
 	return untyped.(versioned.Interface)
@@ -96,46 +96,46 @@ func convert(from interface{}, to runtime.Object) error {
 	return nil
 }
 
-// SamplesV1alpha1 retrieves the SamplesV1alpha1Client
-func (w *wrapClient) SamplesV1alpha1() typedsamplesv1alpha1.SamplesV1alpha1Interface {
-	return &wrapSamplesV1alpha1{
+// NooBaasV1alpha1 retrieves the NooBaasV1alpha1Client
+func (w *wrapClient) NooBaasV1alpha1() typednoobaasourcev1alpha1.NooBaasV1alpha1Interface {
+	return &wrapNooBaasV1alpha1{
 		dyn: w.dyn,
 	}
 }
 
-type wrapSamplesV1alpha1 struct {
+type wrapNooBaasV1alpha1 struct {
 	dyn dynamic.Interface
 }
 
-func (w *wrapSamplesV1alpha1) RESTClient() rest.Interface {
+func (w *wrapNooBaasV1alpha1) RESTClient() rest.Interface {
 	panic("RESTClient called on dynamic client!")
 }
 
-func (w *wrapSamplesV1alpha1) SampleSources(namespace string) typedsamplesv1alpha1.SampleSourceInterface {
-	return &wrapSamplesV1alpha1SampleSourceImpl{
+func (w *wrapNooBaasV1alpha1) NooBaaSources(namespace string) typednoobaasourcev1alpha1.NooBaaSourceInterface {
+	return &wrapNooBaasV1alpha1NooBaaSourceImpl{
 		dyn: w.dyn.Resource(schema.GroupVersionResource{
-			Group:    "samples.knative.dev",
+			Group:    "noobaa.knative.dev",
 			Version:  "v1alpha1",
-			Resource: "samplesources",
+			Resource: "noobaasources",
 		}),
 
 		namespace: namespace,
 	}
 }
 
-type wrapSamplesV1alpha1SampleSourceImpl struct {
+type wrapNooBaasV1alpha1NooBaaSourceImpl struct {
 	dyn dynamic.NamespaceableResourceInterface
 
 	namespace string
 }
 
-var _ typedsamplesv1alpha1.SampleSourceInterface = (*wrapSamplesV1alpha1SampleSourceImpl)(nil)
+var _ typednoobaasourcev1alpha1.NooBaaSourceInterface = (*wrapNooBaasV1alpha1NooBaaSourceImpl)(nil)
 
-func (w *wrapSamplesV1alpha1SampleSourceImpl) Create(ctx context.Context, in *v1alpha1.SampleSource, opts v1.CreateOptions) (*v1alpha1.SampleSource, error) {
+func (w *wrapNooBaasV1alpha1NooBaaSourceImpl) Create(ctx context.Context, in *v1alpha1.NooBaaSource, opts v1.CreateOptions) (*v1alpha1.NooBaaSource, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
-		Group:   "samples.knative.dev",
+		Group:   "noobaa.knative.dev",
 		Version: "v1alpha1",
-		Kind:    "SampleSource",
+		Kind:    "NooBaaSource",
 	})
 	uo := &unstructured.Unstructured{}
 	if err := convert(in, uo); err != nil {
@@ -145,62 +145,62 @@ func (w *wrapSamplesV1alpha1SampleSourceImpl) Create(ctx context.Context, in *v1
 	if err != nil {
 		return nil, err
 	}
-	out := &v1alpha1.SampleSource{}
+	out := &v1alpha1.NooBaaSource{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapSamplesV1alpha1SampleSourceImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (w *wrapNooBaasV1alpha1NooBaaSourceImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return w.dyn.Namespace(w.namespace).Delete(ctx, name, opts)
 }
 
-func (w *wrapSamplesV1alpha1SampleSourceImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (w *wrapNooBaasV1alpha1NooBaaSourceImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	return w.dyn.Namespace(w.namespace).DeleteCollection(ctx, opts, listOpts)
 }
 
-func (w *wrapSamplesV1alpha1SampleSourceImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha1.SampleSource, error) {
+func (w *wrapNooBaasV1alpha1NooBaaSourceImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha1.NooBaaSource, error) {
 	uo, err := w.dyn.Namespace(w.namespace).Get(ctx, name, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1alpha1.SampleSource{}
+	out := &v1alpha1.NooBaaSource{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapSamplesV1alpha1SampleSourceImpl) List(ctx context.Context, opts v1.ListOptions) (*v1alpha1.SampleSourceList, error) {
+func (w *wrapNooBaasV1alpha1NooBaaSourceImpl) List(ctx context.Context, opts v1.ListOptions) (*v1alpha1.NooBaaSourceList, error) {
 	uo, err := w.dyn.Namespace(w.namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1alpha1.SampleSourceList{}
+	out := &v1alpha1.NooBaaSourceList{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapSamplesV1alpha1SampleSourceImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.SampleSource, err error) {
+func (w *wrapNooBaasV1alpha1NooBaaSourceImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.NooBaaSource, err error) {
 	uo, err := w.dyn.Namespace(w.namespace).Patch(ctx, name, pt, data, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1alpha1.SampleSource{}
+	out := &v1alpha1.NooBaaSource{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapSamplesV1alpha1SampleSourceImpl) Update(ctx context.Context, in *v1alpha1.SampleSource, opts v1.UpdateOptions) (*v1alpha1.SampleSource, error) {
+func (w *wrapNooBaasV1alpha1NooBaaSourceImpl) Update(ctx context.Context, in *v1alpha1.NooBaaSource, opts v1.UpdateOptions) (*v1alpha1.NooBaaSource, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
-		Group:   "samples.knative.dev",
+		Group:   "noobaa.knative.dev",
 		Version: "v1alpha1",
-		Kind:    "SampleSource",
+		Kind:    "NooBaaSource",
 	})
 	uo := &unstructured.Unstructured{}
 	if err := convert(in, uo); err != nil {
@@ -210,18 +210,18 @@ func (w *wrapSamplesV1alpha1SampleSourceImpl) Update(ctx context.Context, in *v1
 	if err != nil {
 		return nil, err
 	}
-	out := &v1alpha1.SampleSource{}
+	out := &v1alpha1.NooBaaSource{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapSamplesV1alpha1SampleSourceImpl) UpdateStatus(ctx context.Context, in *v1alpha1.SampleSource, opts v1.UpdateOptions) (*v1alpha1.SampleSource, error) {
+func (w *wrapNooBaasV1alpha1NooBaaSourceImpl) UpdateStatus(ctx context.Context, in *v1alpha1.NooBaaSource, opts v1.UpdateOptions) (*v1alpha1.NooBaaSource, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
-		Group:   "samples.knative.dev",
+		Group:   "noobaa.knative.dev",
 		Version: "v1alpha1",
-		Kind:    "SampleSource",
+		Kind:    "NooBaaSource",
 	})
 	uo := &unstructured.Unstructured{}
 	if err := convert(in, uo); err != nil {
@@ -231,13 +231,13 @@ func (w *wrapSamplesV1alpha1SampleSourceImpl) UpdateStatus(ctx context.Context, 
 	if err != nil {
 		return nil, err
 	}
-	out := &v1alpha1.SampleSource{}
+	out := &v1alpha1.NooBaaSource{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapSamplesV1alpha1SampleSourceImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (w *wrapNooBaasV1alpha1NooBaaSourceImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return nil, errors.New("NYI: Watch")
 }

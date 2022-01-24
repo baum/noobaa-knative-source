@@ -27,9 +27,9 @@ import (
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
-	versioned "knative.dev/sample-source/pkg/client/clientset/versioned"
-	internalinterfaces "knative.dev/sample-source/pkg/client/informers/externalversions/internalinterfaces"
-	samples "knative.dev/sample-source/pkg/client/informers/externalversions/samples"
+	versioned "github.com/baum/noobaa-source/pkg/client/clientset/versioned"
+	internalinterfaces "github.com/baum/noobaa-source/pkg/client/informers/externalversions/internalinterfaces"
+	noobaasource "github.com/baum/noobaa-source/pkg/client/informers/externalversions/noobaasources"
 )
 
 // SharedInformerOption defines the functional option type for SharedInformerFactory.
@@ -172,9 +172,9 @@ type SharedInformerFactory interface {
 	ForResource(resource schema.GroupVersionResource) (GenericInformer, error)
 	WaitForCacheSync(stopCh <-chan struct{}) map[reflect.Type]bool
 
-	Samples() samples.Interface
+	NooBaas() noobaasource.Interface
 }
 
-func (f *sharedInformerFactory) Samples() samples.Interface {
-	return samples.New(f, f.namespace, f.tweakListOptions)
+func (f *sharedInformerFactory) NooBaas() noobaasource.Interface {
+	return noobaasource.New(f, f.namespace, f.tweakListOptions)
 }

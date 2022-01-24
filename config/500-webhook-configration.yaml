@@ -14,60 +14,60 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: defaulting.webhook.knative-samples.knative.dev
+  name: defaulting.webhook.knative-noobaa.knative.dev
   labels:
-    samples.knative.dev/release: devel
+    noobaa.knative.dev/release: devel
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
       service:
-        name: sample-source-webhook
-        namespace: knative-samples
+        name: noobaa-source-webhook
+        namespace: knative-noobaa
     sideEffects: None
     failurePolicy: Fail
-    name: defaulting.webhook.knative-samples.knative.dev
+    name: defaulting.webhook.knative-noobaa.knative.dev
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: validation.webhook.knative-samples.knative.dev
+  name: validation.webhook.knative-noobaa.knative.dev
   labels:
-    samples.knative.dev/release: devel
+    noobaa.knative.dev/release: devel
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
       service:
-        name: sample-source-webhook
-        namespace: knative-samples
+        name: noobaa-source-webhook
+        namespace: knative-noobaa
     sideEffects: None
     failurePolicy: Fail
-    name: validation.webhook.knative-samples.knative.dev
+    name: validation.webhook.knative-noobaa.knative.dev
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: config.webhook.knative-samples.knative.dev
+  name: config.webhook.knative-noobaa.knative.dev
   labels:
-    samples.knative.dev/release: devel
+    noobaa.knative.dev/release: devel
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
     clientConfig:
       service:
-        name: sample-source-webhook
-        namespace: knative-samples
+        name: noobaa-source-webhook
+        namespace: knative-noobaa
     sideEffects: None
     failurePolicy: Fail
-    name: config.webhook.knative-samples.knative.dev
+    name: config.webhook.knative-noobaa.knative.dev
     namespaceSelector:
       matchExpressions:
-        - key: samples.knative.dev/release
+        - key: noobaa.knative.dev/release
           operator: Exists
 ---
 apiVersion: v1
 kind: Secret
 metadata:
   name: webhook-certs
-  namespace: knative-samples
+  namespace: knative-noobaa
   labels:
-    samples.knative.dev/release: devel
+    noobaa.knative.dev/release: devel
 # The data is populated at install time.

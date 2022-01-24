@@ -15,16 +15,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sample-source-webhook
-  namespace: knative-samples
+  name: noobaa-source-webhook
+  namespace: knative-noobaa
   labels:
-    samples.knative.dev/release: devel
+    noobaa.knative.dev/release: devel
 spec:
   replicas: 1
   selector:
     matchLabels: &labels
-      app: sample-source-webhook
-      role: sample-source-webhook
+      app: noobaa-source-webhook
+      role: noobaa-source-webhook
   template:
     metadata:
       labels: *labels
@@ -36,15 +36,15 @@ spec:
           - podAffinityTerm:
               labelSelector:
                 matchLabels:
-                  app: sample-source-webhook
+                  app: noobaa-source-webhook
               topologyKey: kubernetes.io/hostname
             weight: 100
 
-      serviceAccountName: sample-source-webhook
+      serviceAccountName: noobaa-source-webhook
       containers:
-        - name: samplesource-webhook
+        - name: noobaasource-webhook
           terminationMessagePolicy: FallbackToLogsOnError
-          image: ko://knative.dev/sample-source/cmd/webhook
+          image: ko://github.com/baum/noobaa-source/cmd/webhook
           env:
           - name: SYSTEM_NAMESPACE
             valueFrom:
@@ -55,7 +55,7 @@ spec:
           - name: METRICS_DOMAIN
             value: knative.dev/eventing
           - name: WEBHOOK_NAME
-            value: samplesource-webhook
+            value: noobaasource-webhook
           - name: POD_NAME
             valueFrom:
               fieldRef:
@@ -79,14 +79,14 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    samples.knative.dev/release: devel
-    role: sample-source-webhook
-  name: sample-source-webhook
-  namespace: knative-samples
+    noobaa.knative.dev/release: devel
+    role: noobaa-source-webhook
+  name: noobaa-source-webhook
+  namespace: knative-noobaa
 spec:
   ports:
     - name: https-webhook
       port: 443
       targetPort: 8443
   selector:
-    role: sample-source-webhook
+    role: noobaa-source-webhook

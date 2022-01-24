@@ -15,10 +15,10 @@ limitations under the License.
 package main
 
 import (
+	myadapter "github.com/baum/noobaa-source/pkg/adapter"
 	"knative.dev/eventing/pkg/adapter/v2"
-	myadapter "knative.dev/sample-source/pkg/adapter"
 )
 
 func main() {
-	adapter.Main("sample-source", myadapter.NewEnv, myadapter.NewAdapter)
+	adapter.Main("noobaa-source", myadapter.NewEnv, myadapter.NewAdapter)
 }

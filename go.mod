@@ -1,4 +1,4 @@
-module knative.dev/sample-source
+module github.com/baum/noobaa-source
 
 go 1.14
 

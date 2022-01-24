@@ -24,14 +24,14 @@ import (
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	serializer "k8s.io/apimachinery/pkg/runtime/serializer"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
-	samplesv1alpha1 "knative.dev/sample-source/pkg/apis/samples/v1alpha1"
+	noobaasourcev1alpha1 "github.com/baum/noobaa-source/pkg/apis/noobaasources/v1alpha1"
 )
 
 var scheme = runtime.NewScheme()
 var codecs = serializer.NewCodecFactory(scheme)
 
 var localSchemeBuilder = runtime.SchemeBuilder{
-	samplesv1alpha1.AddToScheme,
+	noobaasourcev1alpha1.AddToScheme,
 }
 
 // AddToScheme adds all types of this clientset into the given scheme. This allows composition

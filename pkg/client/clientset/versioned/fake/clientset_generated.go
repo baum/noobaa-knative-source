@@ -24,9 +24,9 @@ import (
 	"k8s.io/client-go/discovery"
 	fakediscovery "k8s.io/client-go/discovery/fake"
 	"k8s.io/client-go/testing"
-	clientset "knative.dev/sample-source/pkg/client/clientset/versioned"
-	samplesv1alpha1 "knative.dev/sample-source/pkg/client/clientset/versioned/typed/samples/v1alpha1"
-	fakesamplesv1alpha1 "knative.dev/sample-source/pkg/client/clientset/versioned/typed/samples/v1alpha1/fake"
+	clientset "github.com/baum/noobaa-source/pkg/client/clientset/versioned"
+	noobaasv1alpha1 "github.com/baum/noobaa-source/pkg/client/clientset/versioned/typed/noobaasources/v1alpha1"
+	fakenoobaasv1alpha1 "github.com/baum/noobaa-source/pkg/client/clientset/versioned/typed/noobaasources/v1alpha1/fake"
 )
 
 // NewSimpleClientset returns a clientset that will respond with the provided objects.
@@ -79,7 +79,7 @@ var (
 	_ testing.FakeClient  = &Clientset{}
 )
 
-// SamplesV1alpha1 retrieves the SamplesV1alpha1Client
-func (c *Clientset) SamplesV1alpha1() samplesv1alpha1.SamplesV1alpha1Interface {
-	return &fakesamplesv1alpha1.FakeSamplesV1alpha1{Fake: &c.Fake}
+// NooBaasV1alpha1 retrieves the NooBaasV1alpha1Client
+func (c *Clientset) NooBaasV1alpha1() noobaasv1alpha1.NooBaasV1alpha1Interface {
+	return &fakenoobaasv1alpha1.FakeNooBaasV1alpha1{Fake: &c.Fake}
 }
